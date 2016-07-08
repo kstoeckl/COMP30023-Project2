@@ -1,0 +1,76 @@
+Report,
+
+In this report the effect of increasing the number of connected clients on
+several memory usage measures were investigated.
+
+A Bash Script was written to connect a number of clients [0, 20] to the server.
+After all clients had connected (and before they had made their first guess in 
+the game), the server was sent the SIGINT signal, terminating it and 
+outputting the following data.
+
+Nectar VM
+#Num clients VMSize(Pages) RSS(Pages) Text(Pages) Data+Stack(Pages)
+0				 20593  	 191 		 3 			 18519 
+1				 39026  	 212 		 3 			 36952 
+2				 57459  	 212 		 3 			 55385 
+3				 75892  	 219 		 3 			 73818 
+4				 94325  	 219 		 3 			 92251 
+5				 112758 	 222 		 3 			 110684 
+6				 131191 	 225 		 3 			 129117 
+7				 149624 	 232 		 3 			 147550 
+8				 168057 	 239 		 3 			 165983 
+9				 186490 	 243 		 3 			 184416 
+10				 186490 	 242 		 3 			 184416 
+11				 223356 	 248 		 3 			 221282 
+12				 241789 	 255 		 3 			 239715 
+13				 260222 	 257 		 3 			 258148 
+14				 278655 	 261 		 3 			 276581 
+15				 280704 	 263 		 3 			 278630 
+16				 282753 	 269 		 3 			 280679 
+17				 284802 	 266 		 3 			 282728 
+18				 286851 	 275 		 3 			 284777 
+19				 288900 	 276 		 3 			 286826 
+20				 290949 	 275 		 3 			 288875 
+
+In this Data,
+	VMSize is the Total Virtual Memory Size of the Process.
+	RSS is the Resident Set Size of the Process ie. the total number 
+		of pages stored in main Memory.
+	Text is the Size of the text(program) component of the process.
+	Data+Stack is the Size of the Stack + the Size of the data(variables)
+		of the process.
+
+Observing the data, several clear trends were apparent.
+
+	Firstly, the Size of Text remains constant as the number of clients is
+	increased. This result was expected as the connection of an additional
+	client does not change the underlying code of the program.
+
+	Secondly it was found that after the initial creation of the server,
+	the connection of each additional client increased the Total Virtual 
+	Memory Size and the Size of the Data+Stack of the process by the same
+	amount. By performing some quick analysis in Microsoft Excel it was 
+	found that each client increased the Total Virtual Memory Size of the
+	process by 18433 pages. This direct correlation	suggests that each 
+	additional client results in an increases in the virtual memory only 
+	in the Data and Stack components of the process.
+
+	Thirdly it was interesting to compare the rate of increase of the
+	Resident Set Size with that of Virtual Memory Size. The Resident Set 
+	Size, despite fluctuations does appear to increase as the number of 
+	clients is increased. However, this increase is approximately 4 pages
+	per client, several orders of magnitude smaller than 18433. This 
+	indicates that although the process 'thinks' its consuming vastly 
+	more system resources with each client (i.e. the increase in VM) in
+	reality the actual increase in usage of main memory is quite small.
+	This is likely achieved by the system through efficient memory 
+	management techniques, similar to those we have studied throughout
+	this semester.
+
+In conclusion several facets of our theoretical study of memory usage
+are apparent in this data. The amount of memory used to hold the text
+remains constant with the number of clients. Each additional client 
+results in an increase in the size of the Data and Stack components 
+of a process and efficient memory management techniques are used 
+such that the actual increase in main memory usage is significantly
+smaller than the increase in virtual memory.
